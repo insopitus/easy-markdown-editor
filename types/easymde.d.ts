@@ -35,6 +35,7 @@ type ToolbarButton =
     | 'ordered-list'
     | 'link'
     | 'image'
+    | 'upload-image'
     | 'strikethrough'
     | 'code'
     | 'table'
@@ -257,6 +258,8 @@ declare class EasyMDE {
     isFullscreenActive(): boolean;
 
     clearAutosavedValue(): void;
+
+    updateStatusBar(itemName: string, content: string): void;
 
     static toggleBold: (editor: EasyMDE) => void;
     static toggleItalic: (editor: EasyMDE) => void;

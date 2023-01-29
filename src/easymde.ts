@@ -12,7 +12,8 @@ import 'codemirror/addon/search/searchcursor.js'
 import 'codemirror/mode/gfm/gfm.js'
 import 'codemirror/mode/xml/xml.js'
 import { marked } from 'marked'
-import { createTooltip, getState, addAnchorTargetBlank, removeListStyleWhenCheckbox, fixShortcut, isMobile, createSep, isMac } from './utils';
+import { createTooltip, getState, addAnchorTargetBlank, removeListStyleWhenCheckbox, fixShortcut, isMobile, createSep, isMac, extend, wordCount } from './utils';
+import { Options } from './interface';
 
 
 
@@ -1255,71 +1256,6 @@ function _cleanBlock(cm) {
     }
 }
 
-/**
- * Convert a number of bytes to a human-readable file size. If you desire
- * to add a space between the value and the unit, you need to add this space
- * to the given units.
- * @param bytes {number} A number of bytes, as integer. Ex: 421137
- * @param units {number[]} An array of human-readable units, ie. [' B', ' K', ' MB']
- * @returns string A human-readable file size. Ex: '412 KB'
- */
-function humanFileSize(bytes: number, units: number[]) {
-    if (Math.abs(bytes) < 1024) {
-        return '' + bytes + units[0];
-    }
-    var u = 0;
-    do {
-        bytes /= 1024;
-        ++u;
-    } while (Math.abs(bytes) >= 1024 && u < units.length);
-    return '' + bytes.toFixed(1) + units[u];
-}
-
-// Merge the properties of one object into another.
-function _mergeProperties(target, source) {
-    for (var property in source) {
-        if (Object.prototype.hasOwnProperty.call(source, property)) {
-            if (source[property] instanceof Array) {
-                target[property] = source[property].concat(target[property] instanceof Array ? target[property] : []);
-            } else if (
-                source[property] !== null &&
-                typeof source[property] === 'object' &&
-                source[property].constructor === Object
-            ) {
-                target[property] = _mergeProperties(target[property] || {}, source[property]);
-            } else {
-                target[property] = source[property];
-            }
-        }
-    }
-
-    return target;
-}
-
-// Merge an arbitrary number of objects into one.
-function extend(target) {
-    for (var i = 1; i < arguments.length; i++) {
-        target = _mergeProperties(target, arguments[i]);
-    }
-
-    return target;
-}
-
-/* The right word count in respect for CJK. */
-function wordCount(data) {
-    var pattern = /[a-zA-Z0-9_\u00A0-\u02AF\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
-    var m = data.match(pattern);
-    var count = 0;
-    if (m === null) return count;
-    for (var i = 0; i < m.length; i++) {
-        if (m[i].charCodeAt(0) >= 0x4E00) {
-            count += m[i].length;
-        } else {
-            count += 1;
-        }
-    }
-    return count;
-}
 
 var iconClassMap = {
     'bold': 'fa fa-bold',
@@ -1593,10 +1529,11 @@ var errorMessages = {
 /**
  * Interface of EasyMDE.
  */
-class EasyMDE {
+export class EasyMDE {
 
-    codemirror :CodeMirror.Editor
-    constructor(options) {
+    codemirror: CodeMirror.Editor
+    element: HTMLElement
+    constructor(options: Options) {
         // Handle options parameter
         options = options || {};
 

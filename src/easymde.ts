@@ -77,14 +77,14 @@ export const shortcuts = {
  */
 function createToolbarDropdown(options, enableTooltips, shortcuts, parent) {
     var el = createToolbarButton(options, false, enableTooltips, shortcuts, 'button', parent);
-    el.classList.add('easymde-dropdown');
+    el.classList.add('Editor-dropdown');
 
     el.onclick = function () {
         el.focus();
     };
 
     var content = document.createElement('div');
-    content.className = 'easymde-dropdown-content';
+    content.className = 'Editor-dropdown-content';
     for (var childrenIndex = 0; childrenIndex < options.children.length; childrenIndex++) {
 
         var child = options.children[childrenIndex];
@@ -217,9 +217,9 @@ var saved_overflow = '';
 
 /**
  * Toggle full screen of the editor.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function toggleFullScreen(editor: EasyMDE) {
+function toggleFullScreen(editor: Editor) {
     // Set fullscreen
     var cm = editor.codemirror;
     cm.setOption('fullScreen', !cm.getOption('fullScreen'));
@@ -239,11 +239,11 @@ function toggleFullScreen(editor: EasyMDE) {
     if (sidebyside.classList.contains('editor-preview-active-side')) {
         if (editor.options.sideBySideFullscreen === false) {
             // if side-by-side not-fullscreen ok, apply classes as needed
-            var easyMDEContainer = wrapper.parentNode;
+            var EditorContainer = wrapper.parentNode;
             if (cm.getOption('fullScreen')) {
-                easyMDEContainer.classList.remove('sided--no-fullscreen');
+                EditorContainer.classList.remove('sided--no-fullscreen');
             } else {
-                easyMDEContainer.classList.add('sided--no-fullscreen');
+                EditorContainer.classList.add('sided--no-fullscreen');
             }
         } else {
             toggleSideBySide(editor);
@@ -278,35 +278,35 @@ function toggleFullScreen(editor: EasyMDE) {
 
 /**
  * Action for toggling bold.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function toggleBold(editor: EasyMDE) {
+function toggleBold(editor: Editor) {
     _toggleBlock(editor, 'bold', editor.options.blockStyles.bold);
 }
 
 
 /**
  * Action for toggling italic.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function toggleItalic(editor: EasyMDE) {
+function toggleItalic(editor: Editor) {
     _toggleBlock(editor, 'italic', editor.options.blockStyles.italic);
 }
 
 
 /**
  * Action for toggling strikethrough.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function toggleStrikethrough(editor: EasyMDE) {
+function toggleStrikethrough(editor: Editor) {
     _toggleBlock(editor, 'strikethrough', '~~');
 }
 
 /**
  * Action for toggling code block.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function toggleCodeBlock(editor: EasyMDE) {
+function toggleCodeBlock(editor: Editor) {
     var fenceCharsToInsert = editor.options.blockStyles.code;
 
     function fencing_line(line) {
@@ -388,7 +388,7 @@ function toggleCodeBlock(editor: EasyMDE) {
     var block_start, block_end, lineCount;
 
     if (is_code === 'single') {
-        // similar to some EasyMDE _toggleBlock logic
+        // similar to some Editor _toggleBlock logic
         var start = line.text.slice(0, cur_start.ch).replace('`', ''),
             end = line.text.slice(cur_start.ch).replace('`', '');
         cm.replaceRange(start + end, {
@@ -684,9 +684,9 @@ function cleanBlock(editor) {
 
 /**
  * Action for drawing a link.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function drawLink(editor: EasyMDE) {
+function drawLink(editor: Editor) {
     var options = editor.options;
     var url = 'https://';
     if (options.promptURLs) {
@@ -701,9 +701,9 @@ function drawLink(editor: EasyMDE) {
 
 /**
  * Action for drawing an img.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function drawImage(editor: EasyMDE) {
+function drawImage(editor: Editor) {
     var options = editor.options;
     var url = 'https://';
     if (options.promptURLs) {
@@ -726,19 +726,19 @@ function escapePromptURL(url: string) {
 
 /**
  * Action for opening the browse-file window to upload an image to a server.
- * @param {EasyMDE} editor The EasyMDE object
+ * @param {Editor} editor The Editor object
  */
-function drawUploadedImage(editor: EasyMDE) {
+function drawUploadedImage(editor: Editor) {
     // TODO: Draw the image template with a fake url? ie: '![](importing foo.png...)'
     editor.openBrowseFileWindow();
 }
 
 /**
  * Action executed after an image have been successfully imported on the server.
- * @param {EasyMDE} editor The EasyMDE object
+ * @param {Editor} editor The Editor object
  * @param {string} url The url of the uploaded image
  */
-function afterImageUploaded(editor: EasyMDE, url: string) {
+function afterImageUploaded(editor: Editor, url: string) {
     var cm = editor.codemirror;
     var stat = getState(cm);
     var options = editor.options;
@@ -763,9 +763,9 @@ function afterImageUploaded(editor: EasyMDE, url: string) {
 
 /**
  * Action for drawing a table.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function drawTable(editor: EasyMDE) {
+function drawTable(editor: Editor) {
     var cm = editor.codemirror;
     var stat = getState(cm);
     var options = editor.options;
@@ -774,9 +774,9 @@ function drawTable(editor: EasyMDE) {
 
 /**
  * Action for drawing a horizontal rule.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function drawHorizontalRule(editor: EasyMDE) {
+function drawHorizontalRule(editor: Editor) {
     var cm = editor.codemirror;
     var stat = getState(cm);
     var options = editor.options;
@@ -786,9 +786,9 @@ function drawHorizontalRule(editor: EasyMDE) {
 
 /**
  * Undo action.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function undo(editor: EasyMDE) {
+function undo(editor: Editor) {
     var cm = editor.codemirror;
     cm.undo();
     cm.focus();
@@ -797,9 +797,9 @@ function undo(editor: EasyMDE) {
 
 /**
  * Redo action.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function redo(editor: EasyMDE) {
+function redo(editor: Editor) {
     var cm = editor.codemirror;
     cm.redo();
     cm.focus();
@@ -808,21 +808,21 @@ function redo(editor: EasyMDE) {
 
 /**
  * Toggle side by side preview
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function toggleSideBySide(editor: EasyMDE) {
+function toggleSideBySide(editor: Editor) {
     var cm = editor.codemirror;
     var wrapper = cm.getWrapperElement();
     var preview = wrapper.nextSibling;
     var toolbarButton = editor.toolbarElements && editor.toolbarElements['side-by-side'];
     var useSideBySideListener = false;
 
-    var easyMDEContainer = wrapper.parentNode;
+    var EditorContainer = wrapper.parentNode;
 
     if (preview.classList.contains('editor-preview-active-side')) {
         if (editor.options.sideBySideFullscreen === false) {
             // if side-by-side not-fullscreen ok, remove classes when hiding side
-            easyMDEContainer.classList.remove('sided--no-fullscreen');
+            EditorContainer.classList.remove('sided--no-fullscreen');
         }
         preview.classList.remove('editor-preview-active-side');
         if (toolbarButton) toolbarButton.classList.remove('active');
@@ -835,7 +835,7 @@ function toggleSideBySide(editor: EasyMDE) {
             if (!cm.getOption('fullScreen')) {
                 if (editor.options.sideBySideFullscreen === false) {
                     // if side-by-side not-fullscreen ok, add classes when not fullscreen and showing side
-                    easyMDEContainer.classList.add('sided--no-fullscreen');
+                    EditorContainer.classList.add('sided--no-fullscreen');
                 } else {
                     toggleFullScreen(editor);
                 }
@@ -885,9 +885,9 @@ function toggleSideBySide(editor: EasyMDE) {
 
 /**
  * Preview action.
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function togglePreview(editor: EasyMDE) {
+function togglePreview(editor: Editor) {
     var cm = editor.codemirror;
     var wrapper = cm.getWrapperElement();
     var toolbar_div = editor.toolbar_div;
@@ -1114,12 +1114,12 @@ function _toggleLine(cm, name, liststyle) {
 }
 
 /**
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  * @param {'link' | 'image'} type
  * @param {string} startEnd
  * @param {string} url
  */
-function _toggleLink(editor: EasyMDE, type: 'link' | 'image', startEnd: string, url: string) {
+function _toggleLink(editor: Editor, type: 'link' | 'image', startEnd: string, url: string) {
     if (!editor.codemirror || editor.isPreviewActive()) {
         return;
     }
@@ -1162,9 +1162,9 @@ function _toggleLink(editor: EasyMDE, type: 'link' | 'image', startEnd: string, 
 }
 
 /**
- * @param {EasyMDE} editor
+ * @param {Editor} editor
  */
-function _toggleBlock(editor: EasyMDE, type, start_chars, end_chars) {
+function _toggleBlock(editor: Editor, type, start_chars, end_chars) {
     if (!editor.codemirror || editor.isPreviewActive()) {
         return;
     }
@@ -1527,9 +1527,9 @@ var errorMessages = {
 };
 
 /**
- * Interface of EasyMDE.
+ * Interface of Editor.
  */
-export class EasyMDE {
+export class Editor {
 
     codemirror: CodeMirror.Editor
     element: HTMLElement
@@ -1572,7 +1572,7 @@ export class EasyMDE {
             this.element = options.element;
         } else if (options.element === null) {
             // This means that the element option was specified, but no element was found
-            console.log('EasyMDE: Error. No element was found.');
+            console.log('Editor: Error. No element was found.');
             return;
         }
 
@@ -1751,8 +1751,8 @@ export class EasyMDE {
  * - copy-paste;
  * - the browse-file window (opened when the user clicks on the *upload-image* icon).
  * @param {FileList} files The files to upload the the server.
- * @param [onSuccess] {function} see EasyMDE.prototype.uploadImage
- * @param [onError] {function} see EasyMDE.prototype.uploadImage
+ * @param [onSuccess] {function} see Editor.prototype.uploadImage
+ * @param [onError] {function} see Editor.prototype.uploadImage
  */
     uploadImages(files: FileList, onSuccess: Function, onError: Function) {
         if (files.length === 0) {
@@ -1800,9 +1800,9 @@ export class EasyMDE {
         if (matchingClasses.length === 1) {
             this.gui.statusbar.getElementsByClassName(itemName)[0].textContent = content;
         } else if (matchingClasses.length === 0) {
-            console.log('EasyMDE: status bar item ' + itemName + ' was not found.');
+            console.log('Editor: status bar item ' + itemName + ' was not found.');
         } else {
-            console.log('EasyMDE: Several status bar items named ' + itemName + ' was found.');
+            console.log('Editor: Several status bar items named ' + itemName + ' was found.');
         }
     };
     /**
@@ -1956,7 +1956,7 @@ export class EasyMDE {
         this.codemirror = CodeMirror.fromTextArea(el, {
             mode: mode,
             backdrop: backdrop,
-            theme: (options.theme != undefined) ? options.theme : 'easymde',
+            theme: (options.theme != undefined) ? options.theme : 'Editor',
             tabSize: (options.tabSize != undefined) ? options.tabSize : 2,
             indentUnit: (options.tabSize != undefined) ? options.tabSize : 2,
             indentWithTabs: (options.indentWithTabs === false) ? false : true,
@@ -1992,12 +1992,12 @@ export class EasyMDE {
 
         // Wrap Codemirror with container before create toolbar, etc,
         // to use with sideBySideFullscreen option.
-        var easyMDEContainer = document.createElement('div');
-        easyMDEContainer.classList.add('EasyMDEContainer');
-        easyMDEContainer.setAttribute('role', 'application');
+        var EditorContainer = document.createElement('div');
+        EditorContainer.classList.add('EditorContainer');
+        EditorContainer.setAttribute('role', 'application');
         var cmWrapper = this.codemirror.getWrapperElement();
-        cmWrapper.parentNode.insertBefore(easyMDEContainer, cmWrapper);
-        easyMDEContainer.appendChild(cmWrapper);
+        cmWrapper.parentNode.insertBefore(EditorContainer, cmWrapper);
+        EditorContainer.appendChild(cmWrapper);
 
         if (options.toolbar !== false) {
             this.gui.toolbar = this.createToolbar();
@@ -2040,7 +2040,7 @@ export class EasyMDE {
                 return;
             }
 
-            easyMDEContainer.querySelectorAll('.cm-image-marker').forEach(function (e) {
+            EditorContainer.querySelectorAll('.cm-image-marker').forEach(function (e) {
                 var parentEl = e.parentElement;
                 if (!parentEl.innerText.match(/^!\[.*?\]\(.*\)/g)) {
                     // if img pasted on the same line with other text, don't preview, preview only images on separate line
@@ -2105,20 +2105,20 @@ export class EasyMDE {
     };
     autosave() {
         if (isLocalStorageAvailable()) {
-            var easyMDE = this;
+            var Editor = this;
 
             if (this.options.autosave.uniqueId == undefined || this.options.autosave.uniqueId == '') {
-                console.log('EasyMDE: You must set a uniqueId to use the autosave feature');
+                console.log('Editor: You must set a uniqueId to use the autosave feature');
                 return;
             }
 
             if (this.options.autosave.binded !== true) {
-                if (easyMDE.element.form != null && easyMDE.element.form != undefined) {
-                    easyMDE.element.form.addEventListener('submit', function () {
-                        clearTimeout(easyMDE.autosaveTimeoutId);
-                        easyMDE.autosaveTimeoutId = undefined;
+                if (Editor.element.form != null && Editor.element.form != undefined) {
+                    Editor.element.form.addEventListener('submit', function () {
+                        clearTimeout(Editor.autosaveTimeoutId);
+                        Editor.autosaveTimeoutId = undefined;
 
-                        localStorage.removeItem('smde_' + easyMDE.options.autosave.uniqueId);
+                        localStorage.removeItem('smde_' + Editor.options.autosave.uniqueId);
                     });
                 }
 
@@ -2134,7 +2134,7 @@ export class EasyMDE {
                 this.options.autosave.loaded = true;
             }
 
-            var value = easyMDE.value();
+            var value = Editor.value();
             if (value !== '') {
                 localStorage.setItem('smde_' + this.options.autosave.uniqueId, value);
             } else {
@@ -2150,27 +2150,27 @@ export class EasyMDE {
                 el.innerHTML = save + dd;
             }
         } else {
-            console.log('EasyMDE: localStorage not available, cannot autosave');
+            console.log('Editor: localStorage not available, cannot autosave');
         }
     };
 
     clearAutosavedValue() {
         if (isLocalStorageAvailable()) {
             if (this.options.autosave == undefined || this.options.autosave.uniqueId == undefined || this.options.autosave.uniqueId == '') {
-                console.log('EasyMDE: You must set a uniqueId to clear the autosave value');
+                console.log('Editor: You must set a uniqueId to clear the autosave value');
                 return;
             }
 
             localStorage.removeItem('smde_' + this.options.autosave.uniqueId);
         } else {
-            console.log('EasyMDE: localStorage not available, cannot autosave');
+            console.log('Editor: localStorage not available, cannot autosave');
         }
     };
 
     /**
      * Open the browse-file window to upload an image to a server.
-     * @param [onSuccess] {function} see EasyMDE.prototype.uploadImage
-     * @param [onError] {function} see EasyMDE.prototype.uploadImage
+     * @param [onSuccess] {function} see Editor.prototype.uploadImage
+     * @param [onError] {function} see Editor.prototype.uploadImage
      */
     openBrowseFileWindow(onSuccess: Function, onError: Function) {
         var self = this;
@@ -2258,7 +2258,7 @@ export class EasyMDE {
             try {
                 var response = JSON.parse(this.responseText);
             } catch (error) {
-                console.error('EasyMDE: The server did not return a valid json.');
+                console.error('Editor: The server did not return a valid json.');
                 onErrorSup(fillErrorMessage(self.options.errorMessages.importError));
                 return;
             }
@@ -2270,7 +2270,7 @@ export class EasyMDE {
                 } else if (response.error) {  // server side generated error message
                     onErrorSup(fillErrorMessage(response.error));
                 } else {  //unknown error
-                    console.error('EasyMDE: Received an unexpected response after uploading the image.'
+                    console.error('Editor: Received an unexpected response after uploading the image.'
                         + this.status + ' (' + this.statusText + ')');
                     onErrorSup(fillErrorMessage(self.options.errorMessages.importError));
                 }
@@ -2278,7 +2278,7 @@ export class EasyMDE {
         };
 
         request.onerror = function (event) {
-            console.error('EasyMDE: An unexpected error occurred when trying to upload the image.'
+            console.error('Editor: An unexpected error occurred when trying to upload the image.'
                 + event.target.status + ' (' + event.target.statusText + ')');
             onErrorSup(self.options.errorMessages.importError);
         };
@@ -2692,116 +2692,116 @@ function isLocalStorageAvailable() {
 /**
  * Bind static methods for exports.
  */
-EasyMDE.toggleBold = toggleBold;
-EasyMDE.toggleItalic = toggleItalic;
-EasyMDE.toggleStrikethrough = toggleStrikethrough;
-EasyMDE.toggleBlockquote = toggleBlockquote;
-EasyMDE.toggleHeadingSmaller = toggleHeadingSmaller;
-EasyMDE.toggleHeadingBigger = toggleHeadingBigger;
-EasyMDE.toggleHeading1 = toggleHeading1;
-EasyMDE.toggleHeading2 = toggleHeading2;
-EasyMDE.toggleHeading3 = toggleHeading3;
-EasyMDE.toggleHeading4 = toggleHeading4;
-EasyMDE.toggleHeading5 = toggleHeading5;
-EasyMDE.toggleHeading6 = toggleHeading6;
-EasyMDE.toggleCodeBlock = toggleCodeBlock;
-EasyMDE.toggleUnorderedList = toggleUnorderedList;
-EasyMDE.toggleOrderedList = toggleOrderedList;
-EasyMDE.cleanBlock = cleanBlock;
-EasyMDE.drawLink = drawLink;
-EasyMDE.drawImage = drawImage;
-EasyMDE.drawUploadedImage = drawUploadedImage;
-EasyMDE.drawTable = drawTable;
-EasyMDE.drawHorizontalRule = drawHorizontalRule;
-EasyMDE.undo = undo;
-EasyMDE.redo = redo;
-EasyMDE.togglePreview = togglePreview;
-EasyMDE.toggleSideBySide = toggleSideBySide;
-EasyMDE.toggleFullScreen = toggleFullScreen;
+Editor.toggleBold = toggleBold;
+Editor.toggleItalic = toggleItalic;
+Editor.toggleStrikethrough = toggleStrikethrough;
+Editor.toggleBlockquote = toggleBlockquote;
+Editor.toggleHeadingSmaller = toggleHeadingSmaller;
+Editor.toggleHeadingBigger = toggleHeadingBigger;
+Editor.toggleHeading1 = toggleHeading1;
+Editor.toggleHeading2 = toggleHeading2;
+Editor.toggleHeading3 = toggleHeading3;
+Editor.toggleHeading4 = toggleHeading4;
+Editor.toggleHeading5 = toggleHeading5;
+Editor.toggleHeading6 = toggleHeading6;
+Editor.toggleCodeBlock = toggleCodeBlock;
+Editor.toggleUnorderedList = toggleUnorderedList;
+Editor.toggleOrderedList = toggleOrderedList;
+Editor.cleanBlock = cleanBlock;
+Editor.drawLink = drawLink;
+Editor.drawImage = drawImage;
+Editor.drawUploadedImage = drawUploadedImage;
+Editor.drawTable = drawTable;
+Editor.drawHorizontalRule = drawHorizontalRule;
+Editor.undo = undo;
+Editor.redo = redo;
+Editor.togglePreview = togglePreview;
+Editor.toggleSideBySide = toggleSideBySide;
+Editor.toggleFullScreen = toggleFullScreen;
 
 /**
  * Bind instance methods for exports.
  */
-EasyMDE.prototype.toggleBold = function () {
+Editor.prototype.toggleBold = function () {
     toggleBold(this);
 };
-EasyMDE.prototype.toggleItalic = function () {
+Editor.prototype.toggleItalic = function () {
     toggleItalic(this);
 };
-EasyMDE.prototype.toggleStrikethrough = function () {
+Editor.prototype.toggleStrikethrough = function () {
     toggleStrikethrough(this);
 };
-EasyMDE.prototype.toggleBlockquote = function () {
+Editor.prototype.toggleBlockquote = function () {
     toggleBlockquote(this);
 };
-EasyMDE.prototype.toggleHeadingSmaller = function () {
+Editor.prototype.toggleHeadingSmaller = function () {
     toggleHeadingSmaller(this);
 };
-EasyMDE.prototype.toggleHeadingBigger = function () {
+Editor.prototype.toggleHeadingBigger = function () {
     toggleHeadingBigger(this);
 };
-EasyMDE.prototype.toggleHeading1 = function () {
+Editor.prototype.toggleHeading1 = function () {
     toggleHeading1(this);
 };
-EasyMDE.prototype.toggleHeading2 = function () {
+Editor.prototype.toggleHeading2 = function () {
     toggleHeading2(this);
 };
-EasyMDE.prototype.toggleHeading3 = function () {
+Editor.prototype.toggleHeading3 = function () {
     toggleHeading3(this);
 };
-EasyMDE.prototype.toggleHeading4 = function () {
+Editor.prototype.toggleHeading4 = function () {
     toggleHeading4(this);
 };
-EasyMDE.prototype.toggleHeading5 = function () {
+Editor.prototype.toggleHeading5 = function () {
     toggleHeading5(this);
 };
-EasyMDE.prototype.toggleHeading6 = function () {
+Editor.prototype.toggleHeading6 = function () {
     toggleHeading6(this);
 };
-EasyMDE.prototype.toggleCodeBlock = function () {
+Editor.prototype.toggleCodeBlock = function () {
     toggleCodeBlock(this);
 };
-EasyMDE.prototype.toggleUnorderedList = function () {
+Editor.prototype.toggleUnorderedList = function () {
     toggleUnorderedList(this);
 };
-EasyMDE.prototype.toggleOrderedList = function () {
+Editor.prototype.toggleOrderedList = function () {
     toggleOrderedList(this);
 };
-EasyMDE.prototype.cleanBlock = function () {
+Editor.prototype.cleanBlock = function () {
     cleanBlock(this);
 };
-EasyMDE.prototype.drawLink = function () {
+Editor.prototype.drawLink = function () {
     drawLink(this);
 };
-EasyMDE.prototype.drawImage = function () {
+Editor.prototype.drawImage = function () {
     drawImage(this);
 };
-EasyMDE.prototype.drawUploadedImage = function () {
+Editor.prototype.drawUploadedImage = function () {
     drawUploadedImage(this);
 };
-EasyMDE.prototype.drawTable = function () {
+Editor.prototype.drawTable = function () {
     drawTable(this);
 };
-EasyMDE.prototype.drawHorizontalRule = function () {
+Editor.prototype.drawHorizontalRule = function () {
     drawHorizontalRule(this);
 };
-EasyMDE.prototype.undo = function () {
+Editor.prototype.undo = function () {
     undo(this);
 };
-EasyMDE.prototype.redo = function () {
+Editor.prototype.redo = function () {
     redo(this);
 };
-EasyMDE.prototype.togglePreview = function () {
+Editor.prototype.togglePreview = function () {
     togglePreview(this);
 };
-EasyMDE.prototype.toggleSideBySide = function () {
+Editor.prototype.toggleSideBySide = function () {
     toggleSideBySide(this);
 };
-EasyMDE.prototype.toggleFullScreen = function () {
+Editor.prototype.toggleFullScreen = function () {
     toggleFullScreen(this);
 };
 
-EasyMDE.prototype.isPreviewActive = function () {
+Editor.prototype.isPreviewActive = function () {
     var cm = this.codemirror;
     var wrapper = cm.getWrapperElement();
     var preview = wrapper.lastChild;
@@ -2809,7 +2809,7 @@ EasyMDE.prototype.isPreviewActive = function () {
     return preview.classList.contains('editor-preview-active');
 };
 
-EasyMDE.prototype.isSideBySideActive = function () {
+Editor.prototype.isSideBySideActive = function () {
     var cm = this.codemirror;
     var wrapper = cm.getWrapperElement();
     var preview = wrapper.nextSibling;
@@ -2817,38 +2817,38 @@ EasyMDE.prototype.isSideBySideActive = function () {
     return preview.classList.contains('editor-preview-active-side');
 };
 
-EasyMDE.prototype.isFullscreenActive = function () {
+Editor.prototype.isFullscreenActive = function () {
     var cm = this.codemirror;
 
     return cm.getOption('fullScreen');
 };
 
-EasyMDE.prototype.getState = function () {
+Editor.prototype.getState = function () {
     var cm = this.codemirror;
 
     return getState(cm);
 };
 
-EasyMDE.prototype.toTextArea = function () {
+Editor.prototype.toTextArea = function () {
     var cm = this.codemirror;
     var wrapper = cm.getWrapperElement();
-    var easyMDEContainer = wrapper.parentNode;
+    var EditorContainer = wrapper.parentNode;
 
-    if (easyMDEContainer) {
+    if (EditorContainer) {
         if (this.gui.toolbar) {
-            easyMDEContainer.removeChild(this.gui.toolbar);
+            EditorContainer.removeChild(this.gui.toolbar);
         }
         if (this.gui.statusbar) {
-            easyMDEContainer.removeChild(this.gui.statusbar);
+            EditorContainer.removeChild(this.gui.statusbar);
         }
         if (this.gui.sideBySide) {
-            easyMDEContainer.removeChild(this.gui.sideBySide);
+            EditorContainer.removeChild(this.gui.sideBySide);
         }
     }
 
-    // Unwrap easyMDEcontainer before codemirror toTextArea() call
-    easyMDEContainer.parentNode.insertBefore(wrapper, easyMDEContainer);
-    easyMDEContainer.remove();
+    // Unwrap Editorcontainer before codemirror toTextArea() call
+    EditorContainer.parentNode.insertBefore(wrapper, EditorContainer);
+    EditorContainer.remove();
 
     cm.toTextArea();
 
@@ -2859,4 +2859,4 @@ EasyMDE.prototype.toTextArea = function () {
     }
 };
 
-export default EasyMDE
+export default Editor
